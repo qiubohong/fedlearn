@@ -1,12 +1,9 @@
 {
-    "title": "前端基础知识巩固",
+    "title": "前端基础知识巩固(面试必备)",
     "author": "qborfy",
-    "description": "select * from learn",
+    "description": "前端基础知识巩固(面试必备)",
     "language": "zh-hans",
     "gitbook": "3.2.3",
-    "styles": {
-        "website": "./styles/website.css"
-    },
     "structure": {
         "readme": "README.md"
     },
@@ -20,13 +17,13 @@
         "splitter",
         "expandable-chapters-small",
         "anchors",
-
-        "github",
         "github-buttons",
         "donate",
         "sharing-plus",
         "anchor-navigation-ex",
-        "favicon"
+        "code",
+        "tbfed-pagefooter",
+        "lightbox"
     ],
     "pluginsConfig": {
         "github": {
@@ -43,11 +40,10 @@
             ]
         },
         "donate": {
-            "weixin": "./source/images/weixin.png",
+            "wechat": "./source/images/weixin.png",
             "alipay": "./source/images/alipay.png",
             "title": "",
-            "button": "赞赏",
-            "alipayText": "喜欢就支持一下呗~"
+            "button": "赞赏"
         },
         "sharing": {
             "douban": false,
@@ -74,6 +70,11 @@
         },
         "anchor-navigation-ex": {
             "showLevel": false
+        },
+        "tbfed-pagefooter": {
+            "copyright":"Copyright &copy qborfy 2019",
+            "modify_label": "最后修订时间：",
+            "modify_format": "YYYY-MM-DD HH:mm:ss"
         }
     }
 }
