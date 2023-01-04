@@ -42,8 +42,8 @@
             ]
         },
         "donate": {
-            "wechat": "./source/images/weixin.png",
-            "alipay": "./source/images/alipay.png",
+            "wechat": "/fedlearn/source/images/weixin.png",
+            "alipay": "/fedlearn/source/images/alipay.png",
             "title": "",
             "button": "赞赏"
         },
