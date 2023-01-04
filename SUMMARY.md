@@ -12,7 +12,10 @@
   * [3. canvas相关](./source/base/html/section3.md)
 * 第二篇 CSS相关
 * 第三篇 Javscript相关
-* 第四篇 算法相关
+* [第四篇 算法相关](./source/algorithm/readme.md)
+  * [1. 数据结构](./source/algorithm/datastructure/readme.md)
+    * [1.1 链表](./source/algorithm/datastructure/linked-list.md)
+      * [1.1.1 链表算法题](./source/algorithm/datastructure/linked-list-leetcode.md)
 * 第五篇 Node.js相关
 * 第六篇 Vue相关
 * 第七篇 React相关

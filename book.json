@@ -23,7 +23,9 @@
         "anchor-navigation-ex",
         "code",
         "tbfed-pagefooter",
-        "lightbox"
+        "lightbox",
+        "include-codeblock",
+        "katex"
     ],
     "pluginsConfig": {
         "github": {
