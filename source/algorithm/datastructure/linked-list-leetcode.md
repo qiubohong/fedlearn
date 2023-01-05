@@ -296,7 +296,101 @@ var mergeKLists = function(lists) {
 ------
 
 思路：
-- 顺序算法的话，找到前一个prev的节点，并将当前的节点与之替换
+- 按照顺序思路，`[1,2,3]`中，将`1`节点作为，假设`current`前有个`prev`空节点
+- 第一步，将`prev`节点`null`设置为`current`节点`1`的`next`节点
+- 第二步，将`1`节点作为`next`节点`2`的`prev`节点
+- 第三步，将`next`节点`2`赋值给为`current`节点
+- 重复步骤1/2/3步骤，直到`current`节点为空
+- 最终`prev`节点保存的就是反转后的链表了
+
+```javascript
+var reverseList = function(head) {
+    if(!head || !head.next){
+        return head;
+    }
+
+    // 当前节点
+    let current = head;
+    // 当前节点的前一个节点
+    let prev = null;
+    while(current){
+        const next = current.next;
+        // 将当前节点的下一个节点指向上一个节点
+        current.next = prev;
+        // 将当前节点作为下一个节点
+        prev = current;
+        // 将下一个节点作为当前节点
+        current = next;
+    }
+    // 将反转后的节点返回
+    return prev;
+};
+```
+
+还有一种递归的思路，就是将最后移动到第一个，然后将原有链表最后一个删除，重复遍历链表。
+
+
+```
+// 这个复杂度很高 O(n^2) 应该还有优化的空间
+var reverseList = function(head) {
+    let current = head;
+    let prevNode = null;
+    let lastNode = null;
+    while(current){
+        const next = current.next; 
+        if(!next){
+            lastNode = current;
+        }else{
+            if(!next.next){
+                prevNode = current;
+            }
+        }
+        current =current.next;
+    }
+    if(!prevNode && !lastNode){
+        return null;
+    }
+    if(!prevNode && lastNode){
+        return lastNode;
+    }
+    // 删除掉最后一个节点
+    prevNode.next = null;
+    // 已经删除掉最后一个节点的链表
+    lastNode.next = reverseList(head);
+    
+    return lastNode;
+};
+// @lc code=end
+
+```
+
+优化递归思路：
+- 上一个递归算法主要拆分子问题的时候，还需要对剩余链表遍历
+- 那么如果递归的时候不需要对链表遍历，只需要将子问题归纳到2个节点互换顺序，是不是可以解决了
+
+```javascript
+var reverseList = function(head) {
+    // 遍历到只剩下一个节点 直接返回
+    if(head === null || head.next === null){
+        return head;
+    }
+    // 第1次回归 head = 5 ， newList = [5]
+    // 第2次回归 head = [4, 5], 我们需要将反转两者的顺序，把4节点挪到5的后面，就是head.next.next = head, newList = [5,4 ]
+    // 第3次回归 head = [3, 4], 因为在上一次回归中已经把4挪到最后一个节点了，所以这次只需要把3挪到4的后面 newList = [5,4, 3]
+    // 第4次回归 head = [2 ,3], 同理3挪到2的后面 newList = [5,4, 3, 2]
+    // 第5次回归 head = [1, 2], 同理2挪到1的后面，newList = [5,4, 3, 2, 1]
+    const newList = reverseList(head.next);
+    // 获取下一个节点
+    const next = head.next;
+    // 将head挪到下个节点后面
+    next.next = head;
+    // 同事将head的next置空
+    head.next = null;
+
+    return newList;
+};
+
+```
 
 
 ## 5. K 个一组翻转链表
@@ -326,9 +420,77 @@ k 是一个正整数，它的值小于或等于链表的长度。如果节点总
 
 思路：
 
-- 按照顺序算法，定一个指针数字，然后空的数组保存链表值，同时新建一个空的反转链表
-- 链表移动到下一个，指针加1，当指针=k的时候，将数组从尾到头输出到反转链表中
-- 
+- 先将链表拆成K个子链表，建个指针，当等于K，拆出一个临时子链表`tempList`进行反转
+- 新建新链表的第一个节点`firstNode`，以及临时链表最后一个节点`lastNode`
+- 最后判断临时子链表是否为空，不为空则将最后一个节点`lastNode`的next节点指向`tempList`
+
+PS：这样子设计代码比较冗余很多变量，看看优化方案
+
+```javascript
+var reverseKGroup = function (head, k) {
+    if (head === null || head.next === null) {
+        return head;
+    }
+    let current = head;
+    let index = 1;
+    let tempList = null;
+    let lastNode = null;
+    let firstNode = null;
+    while (current) {
+        if (index === 1) {
+            tempList = current;
+        }
+        let next = current.next;
+        if (index === k) {
+            // 开始反转 切断链表
+            current.next = null;
+            let returncurrent = tempList;
+            let prev = null;
+            // 需要把prev的当成current的下个节点
+            while (returncurrent) {
+                const next = returncurrent.next;
+                // 把前一个节点挪到当前节点后面
+                returncurrent.next = prev;
+                // 把当前节点当成前一个节点
+                prev = returncurrent;
+                // 把下个节点作为当前节点
+                returncurrent = next;
+            }
+            if(lastNode !== null){
+                lastNode.next = prev;
+            }
+            if (firstNode === null) {
+                firstNode = prev;
+            }
+            // 反转完的节点为prev
+            index = 0;
+            tempList = null;
+            // lastNode指向最后一个节点
+            while (prev.next) {
+                prev = prev.next;
+            }
+            lastNode = prev;
+        }
+        index++;
+        current = next;
+    }
+    if (tempList) {
+        lastNode.next = tempList;
+    }
+
+    return firstNode;
+
+};
+
+```
+
+优化代码设计方案思路：
+
+- 上面解决答案，新建很多变量，看起来比较难懂，将代码重新设计一下会比较简洁
+  
+```
+```
+
 
 
 ## 数学常识——对数 
