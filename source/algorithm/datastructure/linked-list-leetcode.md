@@ -488,41 +488,227 @@ var reverseKGroup = function (head, k) {
 
 - 上面解决答案，新建很多变量，看起来比较难懂，将代码重新设计一下会比较简洁
   
+```javascript
+
 ```
+
+## 6. 旋转链表
+
+给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。
+
+```
+输入：head = [1,2,3,4,5], k = 2
+输出：[4,5,1,2,3]
+
+输入：head = [0,1,2], k = 4
+输出：[2,0,1]
 ```
 
+思路：
+
+1. 拆分两个问题，一个是将链表右移动，一个移动K次
+2. 抽出链表像右移动函数，很简单，只需要将最后一节点放到第一个即可
+3. 移动K次，可以简单计算一下，如果移动次数大于链表长度Len，即是移动链表的长度倍数，其实只需要移动 `K%Len` 次数
+
+代码实现：
+
+```javascript
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+
+/**
+旋转链表, 从第i个位置开始旋转
+ */
+var rotateNode = function (head) {
+    if (head === null || head.next === null) {
+        return head;
+    }
+
+    
+    let current = head;
+    let prevNode = null;
+    while (current.next) {
+        if(!current.next.next){
+            prevNode = current;
+        }
+        current = current.next;
+    }
+    if(prevNode === current){
+        current.next = head;
+        head.next = null;
+    }else{
+        current.next = head;
+        prevNode.next = null;
+    }
+    
+    return current;
+}
+/**
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode}
+ */
+
+var rotateRight = function (head, k) {
+    // 如果链表的长度小于k 那么只需要取k%len的余数旋转即可
+    if (head === null || head.next === null ) {
+        return head;
+    }
+
+    let current = head;
+    let len = 0;
+    while (current) {
+        len++;
+        current = current.next;
+    }
+
+    let minRotate = k;
+    if (k > len) {
+        minRotate = k % len;
+    }
+    let result = head;
+    for (let i = 0; i < minRotate; i++) {
+        result = rotateNode(result);
+    }
+
+    return result;
+};
+```
+
+换一种思路，可以减少循环次数：
+
+1. 如果是将链表向右移动K次，其实就是将链表倒数的第K个节点放到head节点，其余放到按照顺序衔接
+2. 抽象的说，截取倒数第K个节点为temp，同时将head节点最后一个节点的next
+
+```javascript
+var rotateRight = function (head, k) {
+    // 如果链表的长度小于k 那么只需要取k%len的余数旋转即可
+    if (head === null || head.next === null || k === 0) {
+        return head;
+    }
+
+    let current = head;
+    let len = 0;
+    while (current) {
+        len++;
+        current = current.next;
+    }
+
+    let minRotate = k;
+    if (k > len) {
+        minRotate = k % len;
+    }
+    const splitIndex = len - minRotate;
+    if(splitIndex === 0 || minRotate === 0){
+        return head;
+    }
+    current = head;
+    let tempIndex = 0;
+    let prevNode = null;
+    let startNode = null;
+    let lastNode = null;
+    while(current){
+        if(tempIndex === splitIndex - 1){
+            prevNode = current;
+        }
+        if(tempIndex === splitIndex){
+            startNode = current
+        }
+        tempIndex++;
+        current = current.next;
+        if(current && current.next === null){
+            lastNode = current
+        }
+    }
+
+    prevNode.next = null;
+    lastNode.next = head;
+
+    return startNode;
+};
+```
+
+## 7.分隔链表
+给你一个链表的头节点 head 和一个特定值 x ，请你对链表进行分隔，使得所有 小于 x 的节点都出现在 大于或等于 x 的节点之前。
+
+你应当 保留 两个分区中每个节点的初始相对位置。
+
+```
+输入：head = [1,4,3,2,5,2], x = 3
+输出：[1,2,2,4,3,5]
+```
+
+```
+输入：head = [2,1], x = 2
+输出：[1,2]
+```
+
+思路：
+
+1. 首先是要找出所有小于x值的节点，其次是按照原有的节点顺序进行依次插入到新的链表中并返回
+2. 其实链表就两个操作，确定head，已经将节点插入准确的位置
+3. 从现有的链表按照要求制造新的两个链表，符合要求和不符合要求
+4. 同时将符合要求的链表的next节点指向不符合要求的链表
 
 
-## 数学常识——对数 
-
-$$ log K $$, 指的是对数k，百度百科定义如下：
-
-> 在数学中，对数是对求幂的逆运算，正如除法是乘法的逆运算，反之亦然。  这意味着一个数字的对数是必须产生另一个固定数字（基数）的指数。
->
-> 如果a的x次方等于N（a>0，且a≠1），那么数x叫做以a为底N的对数（logarithm），记作$$ x=log_aN $$。其中，a叫做对数的底数，N叫做真数。 
+> PS： 如何快速构建一个新的链表？
+> - 新建一个空节点 `current`，将空节点赋予给`head`节点, `let current = new ListNode(-1); const head = current;`
+> - 如果新增一个节点，只需要操作： `current.next = newNode; current = current.next;`
+> - 最终返回`head.next`就是一个新的链表
 
 
-简单用公式来描述： $$a^x=N$$, 如果为了得出x的值，可以用表达式 $$ x=\log_aN $$， a是对数的底数， N是真数， 通常我们定义当a=2的时候，忽略不写底数a，比如$$2^x=N$$，可以简写为 $$log N$$
+实现代码：
 
-还有一些其他对数简写：
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} x
+ * @return {ListNode}
+ */
 
-- log以e为底，以x为真数， 可以写作：$$ log_ex = ln x $$
-- log以10位底，以x为真数， $$ log_{10}x =lg x $$
+var partition = function (head, x) {
+    if (head === null || head.next === null) {
+        return head;
+    }
 
+    let current = head;
+    let rightNode = new ListNode(-1);
+    const rightHead = rightNode;
+    let notRightNode = new ListNode(-1);
+    const notRightHead = notRightNode;
+    while (current) {
+        if (current.val < x) {
+            rightNode.next = new ListNode(current.val);
+            rightNode = rightNode.next;
+        } else {
+            notRightNode.next = new ListNode(current.val);
+            notRightNode = notRightNode.next;
+        }
+        current = current.next;
+    }
+    if (rightHead.next === null) {
+        return head;
+    }
+    if(notRightHead.next === null){
+        return rightHead.next;
+    }
+    // 拼凑两个链表
+    rightNode.next = notRightHead.next;
+    return rightHead.next;
+};
+```
 
-## 数学常识——常数e
-
-> `e`代表是数学常数e, 是自然对数的底数
-> 自然对数是以e为底的对数函数，e是一个无理数，约等于2.718281828
-
-更加简单的说，假如你有1块钱，银行抽风了一年利率100%，如果一年结算一次，
-
-- 一年后就能得到1×(1+1)=2块钱
-- 如果半年结算一次，上半年的计息计入下半年的本金，一年后就能得到1×(1+0.5)×(1+0.5)=1×(1+0.5)=2.25块钱。这样就多出了两毛五。
-- 如果像余额宝一样，每天都结算利息，那么一年后你就能得到 $$ 1*(1+1/365)^365=2.7145674550 $$
-- 比一年结算一次多了 七毛多
-- 那么，如果每一秒结算一次，或者每一毫秒结算一次，或者每过无穷短的时间结算一次。那么钱岂不是可以一直加下去？x代表结算次数， 计算公式： $$ {lim_{x \to \infty} (1+1/x)^x}$$
-
-答案是否定，最终一年后我们能得到的钱最多只能是约等于2.71828182845904523536，也就是`e`。
-
-综上，e的含义可以理解为增长的极限，“自然常数”的“自然”也可以理解为它是非人为的，我们只是发现了它。就像圆周率π一样，它也存在于生活的很多地方。
+<!--  end -->

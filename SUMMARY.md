@@ -18,6 +18,7 @@
       * [1.1.1 链表算法题](./source/algorithm/datastructure/linked-list-leetcode.md)
   * [2. 基础算法](./source/algorithm/base/readme.md)
     * [2.1 递归算法](./source/algorithm/base/recursion.md)
+  * [3. 数学基础](./source/algorithm/math/readme.md)
 * 第五篇 Node.js相关
 * 第六篇 Vue相关
 * 第七篇 React相关
