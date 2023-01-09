@@ -1,5 +1,72 @@
 # 常见面试问题
 
+## 1. 环形链表
+
+给你一个链表的头节点 head ，判断链表中是否有环。
+
+如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况。
+
+如果链表中存在环 ，则返回 true 。 否则，返回 false 。
+
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：true
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+```
+输入：head = [1,2], pos = 0
+输出：true
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+```
+输入：head = [1], pos = -1
+输出：false
+解释：链表中没有环。
+```
+
+思路：
+
+- 这道题好像有点简单，就是循环判断链表，直到节点被重复出现
+- 这道题坑点在于pos，pos可以指定从链表的某个节点开始，链表不再是从0开始遍历，所以这里不要通过判断最后一节点.next不为空判断是否为循环，因为你压根不知道哪个节点是最后一个节点
+
+```javascript
+var hasCycle = function(head) {
+    let current = head;
+    const set = new Set();
+    while(current){
+        if(set.has(current)){
+            return true;
+        }
+        set.add(current);
+        current = current.next;
+    }
+    return false;
+};
+```
+
+优化占有空间，借鉴官方解答，使用快慢指针，当快指针等于慢指针，就是循环链表
+
+```javascript
+var hasCycle = function(head) {
+    if(head === null || head.next === null){
+        return false;
+    }
+    let current = head; //慢指针
+    let next = head.next; // 快指针
+    while(current != next){
+        if(next === null || next.next == null){
+            return false;
+        }
+        current = current.next;// 慢指针走一步
+        next = next.next.next; // 快指针走两步
+    }
+    return true;
+};
+
+```
+
 ## 1.删除排序链表中的重复元素
 
 > 给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回已排序的链表 。
@@ -710,5 +777,7 @@ var partition = function (head, x) {
     return rightHead.next;
 };
 ```
+
+
 
 <!--  end -->
