@@ -16,6 +16,7 @@
   * [1. 数据结构](./source/algorithm/datastructure/readme.md)
     * [1.1 链表](./source/algorithm/datastructure/linked-list.md)
       * [1.1.1 链表算法题](./source/algorithm/datastructure/linked-list-leetcode.md)
+    * [1.2 队列](./source/algorithm/datastructure/queue.md)
   * [2. 基础算法](./source/algorithm/base/readme.md)
     * [2.1 递归算法](./source/algorithm/base/recursion.md)
   * [3. 数学基础](./source/algorithm/math/readme.md)
